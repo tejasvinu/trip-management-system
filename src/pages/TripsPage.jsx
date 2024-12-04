@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { tripService } from '../services/tripService';
 import TripList from '../components/TripList';
+import CreateTripModal from '../components/CreateTripModal';
 
 const TripsPage = () => {
   const [trips, setTrips] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     loadTrips();
@@ -23,20 +25,9 @@ const TripsPage = () => {
     }
   };
 
-  const handleCreateTrip = async () => {
-    const newTrip = {
-      destination: "Paris",
-      startdate: "2024-06-01",
-      enddate: "2024-06-07",
-      price: 1500,
-      fullprice: 2000,
-      capacity: 20,
-      tripimage: "https://example.com/paris.jpg",
-      weeknumber: 22
-    };
-
+  const handleCreateTrip = async (tripData) => {
     try {
-      await tripService.createTrip(newTrip);
+      await tripService.createTrip(tripData);
       loadTrips();
     } catch (err) {
       setError(err.message);
@@ -67,11 +58,17 @@ const TripsPage = () => {
       )}
 
       <button
-        onClick={handleCreateTrip}
+        onClick={() => setIsModalOpen(true)}
         className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600"
       >
         Create New Trip
       </button>
+
+      <CreateTripModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleCreateTrip}
+      />
     </div>
   );
 };
