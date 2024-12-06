@@ -1,6 +1,14 @@
+import { useNavigate } from 'react-router-dom';
+
 const TripCard = ({ trip, onDelete }) => {
+  const navigate = useNavigate();
+
+  const handleTripClick = () => {
+    navigate(`/trips/${trip._id}`);
+  };
+
   return (
-    <div className="bg-white shadow rounded-lg p-6">
+    <div className="bg-white shadow rounded-lg p-6" onClick={handleTripClick}>
       <h3 className="text-xl font-semibold mb-2">{trip.destination}</h3>
       <p className="text-gray-600">Price: ${trip.price}</p>
       <p className="text-gray-600">Capacity: {trip.capacity}</p>

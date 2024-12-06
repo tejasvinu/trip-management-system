@@ -48,7 +48,7 @@ function App() {
           <div className="max-w-5xl mx-auto">
             <Routes>
               <Route path="/" element={<HomePage />} />
-              <Route path="/trips" element={<TripsPage />} />
+              <Route path="/trips/*" element={<TripsPage />} />
               <Route path="/management" element={<TripManagementPage />} />
             </Routes>
           </div>
