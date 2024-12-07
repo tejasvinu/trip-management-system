@@ -85,6 +85,26 @@ export const tripDetailsService = {
     return response.json();
   },
 
+  async createTripImage(tripId, imageData) {
+    const response = await fetch(`${API_BASE_URL}/tripimages`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ...imageData,
+        tripid: tripId
+      })
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to create image');
+    }
+    
+    return response.json();
+  },
+
   async editTripDetails(tripId, data) {
     console.log(data);
     const response = await fetch(`${API_BASE_URL}/trips/${tripId}`, {
