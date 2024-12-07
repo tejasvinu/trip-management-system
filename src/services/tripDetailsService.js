@@ -3,7 +3,6 @@ import { API_BASE_URL } from '../config';
 export const tripDetailsService = {
   async getTripDetails(tripId) {
     const response = await fetch(`${API_BASE_URL}/trips/${tripId}`);
-
     if (!response.ok) throw new Error('Failed to fetch trip details');
     return response.json();
   },
@@ -39,7 +38,7 @@ export const tripDetailsService = {
   },
 
   async updateItinerary(tripId, data) {
-    const response = await fetch(`${API_BASE_URL}/itineraries/trip/${tripId}`, {
+    const response = await fetch(`${API_BASE_URL}/itineraries/${tripId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -62,21 +61,34 @@ export const tripDetailsService = {
     return response.json();
   },
 
-  async updateImage(tripId, imageId, data) {
-    const response = await fetch(`${API_BASE_URL}/tripimages/trip/${tripId}/${imageId}`, {
-      method: 'PUT',
+  async updateTripImages(tripId, data) {
+    const response = await fetch(`${API_BASE_URL}/tripimages/trip/${tripId}`, {
+      method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data)
+      // Transform the updates into the required format
+      body: JSON.stringify(data.updates.map(update => ({
+        _id: update._id,
+        title: update.title,
+        description: update.description,
+        day: update.day ? Number(update.day) : undefined,
+        imageurl: update.imageurl
+      })))
     });
-    if (!response.ok) throw new Error('Failed to update image');
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to update images');
+    }
+    
     return response.json();
   },
 
   async editTripDetails(tripId, data) {
+    console.log(data);
     const response = await fetch(`${API_BASE_URL}/trips/${tripId}`, {
-      method: 'PATCH',
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -86,21 +98,26 @@ export const tripDetailsService = {
     return response.json();
   },
 
-  async editItinerary(tripId, data) {
-    const response = await fetch(`${API_BASE_URL}/itineraries/trip/${tripId}`, {
-      method: 'PATCH',
+  async editItinerary(itineraryId, data) {
+    const response = await fetch(`${API_BASE_URL}/itineraries/${itineraryId}`, {
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
     });
-    if (!response.ok) throw new Error('Failed to edit itinerary');
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to edit itinerary');
+    }
+    
     return response.json();
   },
 
   async editHotel(tripId, hotelId, data) {
     const response = await fetch(`${API_BASE_URL}/hotels/trip/${tripId}/${hotelId}`, {
-      method: 'PATCH',
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -110,15 +127,4 @@ export const tripDetailsService = {
     return response.json();
   },
 
-  async editImage(tripId, imageId, data) {
-    const response = await fetch(`${API_BASE_URL}/tripimages/trip/${tripId}/${imageId}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-    if (!response.ok) throw new Error('Failed to edit image');
-    return response.json();
-  },
 };
