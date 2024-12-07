@@ -41,7 +41,7 @@ function HomePage() {
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
       <div className="min-h-screen bg-gray-50">
         <Navbar />
         <div className="py-12 px-4 sm:px-6 lg:px-8">
